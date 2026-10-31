@@ -1,0 +1,20 @@
+# Deploys the OpenJarvis web UI (frontend/) as a static single-page app.
+# The Python API server (`jarvis serve`) cannot run on Netlify; host it
+# elsewhere (e.g. Render, see render.yaml) and point the UI at it either via
+# Settings -> API URL in the app or the VITE_API_URL build environment variable.
+[build]
+  base = "frontend"
+  # build:tauri writes to frontend/dist instead of the Python package's
+  # static directory used by `jarvis gui`. Dependencies are installed
+  # explicitly because the build does not install them on its own.
+  command = "npm ci --include=dev && npm run build:tauri"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# Client-side routing (react-router BrowserRouter).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
